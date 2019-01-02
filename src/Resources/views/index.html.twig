@@ -111,14 +111,14 @@
 								<div class="menu left transition hidden" tabindex="-1">
 									<a class="item"
 									   href="#"
-									   onclick="downloadCsv(this, 0, {{ row.order.id }})"
+									   onclick="downloadCsv(this, 0, {{ row.id }})"
 									   data-url="{{ path('mango_sylius_admin_export_shipments', {'exporterName': exporterName}) }}">
 										<i class="icon download"></i>
 										{{ 'mango-sylius.ui.shippingExport.onlyDownloadCSV'|trans }}
 									</a>
 									<a class="item"
 									   href="#"
-									   onclick="downloadCsv(this, 1, {{ row.order.id }})"
+									   onclick="downloadCsv(this, 1, {{ row.id }})"
 									   data-change-state-url="{{ path('mango_sylius_admin_change_state_shipments', {'exporterName': exporterName}) }}"
 									   data-url="{{ path('mango_sylius_admin_export_shipments', {'exporterName': exporterName}) }}">
 										<i class="icon download"></i>

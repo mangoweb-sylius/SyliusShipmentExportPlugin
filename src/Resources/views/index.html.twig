@@ -1,0 +1,227 @@
+{% extends '@SyliusAdmin/layout.html.twig' %}
+
+{% block title %}{{ 'mango-sylius.ui.shippingExport.shipmentExport'|trans }} - {{ exporterLabel }} {{ parent() }}{% endblock %}
+
+{% block content %}
+
+	<div class="ui stackable two column grid">
+		<div class="column">
+			<h1 class="ui header">
+				<i class="circular arrow up icon"></i>
+				<div class="content">
+					{{ 'mango-sylius.ui.shippingExport.shipmentExport'|trans }} - {{ exporterLabel }}
+				</div>
+			</h1>
+		</div>
+
+		<div class="middle aligned column">
+			<div class="ui right floated buttons">
+
+				<div class="ui labeled icon top right floating dropdown button primary link" tabindex="0">
+					<i class="icon download"></i>
+					<span class="text">{{ 'mango-sylius.ui.shippingExport.downloadCsvButton'|trans }} (<span class="counter">all</span>)</span>
+					<div class="menu left transition hidden" tabindex="-1">
+						<a class="item"
+						   href="#"
+						   {% if shipments|length == 0 %}disabled="disabled"{% endif %}
+						   data-url="{{ path('mango_sylius_admin_export_shipments', {'exporterName': exporterName}) }}"
+						   onclick="downloadCsv(this, 0)">
+							<i class="icon download"></i>
+							{{ 'mango-sylius.ui.shippingExport.onlyDownloadCSV'|trans }} (<span class="counter">{{ 'mango-sylius.ui.shippingExport.allShipment'|trans }}</span>)
+						</a>
+						<a class="item"
+						   href="#"
+						   {% if shipments|length == 0 %}disabled="disabled"{% endif %}
+						   data-change-state-url="{{ path('mango_sylius_admin_change_state_shipments', {'exporterName': exporterName}) }}"
+						   data-url="{{ path('mango_sylius_admin_export_shipments', {'exporterName': exporterName}) }}"
+						   onclick="downloadCsv(this, 1)">
+							<i class="icon download"></i>
+							{{ 'mango-sylius.ui.shippingExport.downloadCSVAndSend'|trans }} (<span class="counter">{{ 'mango-sylius.ui.shippingExport.allShipment'|trans }}</span>)
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
+	{% import '@SyliusUi/Macro/table.html.twig' as table %}
+
+	<div class="ui segment">
+		{% if shipments|length > 0 %}
+			<table class="ui sortable stackable celled table">
+				<thead>
+				<tr>
+					<th></th>
+					<th class="sylius-table-column">
+						{{ 'mango-sylius.ui.shippingExport.orderNumber'|trans }}
+					</th>
+					<th class="sylius-table-column">
+						{{ 'mango.email.order.shippingAddress'|trans }}
+					</th>
+					<th class="sylius-table-column">
+						{{ 'mango-sylius.ui.shippingExport.email'|trans }}
+					</th>
+					<th class="sylius-table-column">
+						{{ 'mango-sylius.ui.shippingExport.phoneNumber'|trans }}
+					</th>
+					<th class="sylius-table-column">
+						{{ 'mango-sylius.ui.shippingExport.orderDate'|trans }}
+					</th>
+					<th class="sylius-table-column-actions">
+						{{ 'mango-sylius.ui.shippingExport.actions'|trans }}
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for row in shipments %}
+					<tr class="item">
+						<td>
+							<input class="bulk-select-checkbox exportCheckbox" type="checkbox"
+								   name="checkbox-{{ row.id }}" value="{{ row.id }}"/>
+						</td>
+						<td>
+							<a href="{{ path('sylius_admin_order_show', {'id': row.order.id }) }}">{{ row.order.number }}</a>
+						</td>
+						<td>
+							{% if row.order.shippingAddress.company %}
+								{{ row.order.shippingAddress.company }},
+							{% endif %}
+							{{ row.order.shippingAddress.firstName }}
+							{{ row.order.shippingAddress.lastName }},
+							{{ row.order.shippingAddress.street }},
+							{{ row.order.shippingAddress.postcode }}
+							{{ row.order.shippingAddress.city }},
+							{{ row.order.shippingAddress.countryCode }}
+						</td>
+						<td>
+							{{ row.order.customer.email }}
+						</td>
+						<td>
+							{{ row.order.shippingAddress.phoneNumber }}
+						</td>
+						<td>
+							{{ row.order.checkoutCompletedAt|date }}
+						</td>
+						<td>
+							<div class="ui labeled icon top right floating dropdown button primary link"
+								 tabindex="0">
+								<i class="icon download"></i>
+								<span class="text">{{ 'mango-sylius.ui.shippingExport.downloadCsvButton'|trans }}</span>
+								<div class="menu left transition hidden" tabindex="-1">
+									<a class="item"
+									   href="#"
+									   onclick="downloadCsv(this, 0, {{ row.order.id }})"
+									   data-url="{{ path('mango_sylius_admin_export_shipments', {'exporterName': exporterName}) }}">
+										<i class="icon download"></i>
+										{{ 'mango-sylius.ui.shippingExport.onlyDownloadCSV'|trans }}
+									</a>
+									<a class="item"
+									   href="#"
+									   onclick="downloadCsv(this, 1, {{ row.order.id }})"
+									   data-change-state-url="{{ path('mango_sylius_admin_change_state_shipments', {'exporterName': exporterName}) }}"
+									   data-url="{{ path('mango_sylius_admin_export_shipments', {'exporterName': exporterName}) }}">
+										<i class="icon download"></i>
+										{{ 'mango-sylius.ui.shippingExport.downloadCSVAndSend'|trans }}
+									</a>
+								</div>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			{% import '@SyliusUi/Macro/messages.html.twig' as messages %}
+			{{ messages.info('sylius.ui.no_results_to_display') }}
+		{% endif %}
+	</div>
+
+
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	<script>
+		$(document).ready(function () {
+			$('.exportCheckbox').on('change', countCheckboxes);
+		});
+
+		function countCheckboxes() {
+			var checkedCheckboxes = $('.exportCheckbox:checked');
+
+			var chLength = checkedCheckboxes.length;
+			if (chLength > 0) {
+				$('.counter').html(chLength);
+			} else {
+				$('.counter').html('{{ 'mango-sylius.ui.shippingExport.allShipment'|trans }}');
+			}
+		}
+
+		function getCheckedCheckboxesIds() {
+			var ids = [];
+
+			$('.exportCheckbox:checked').each(function () {
+				ids.push($(this).val());
+			});
+
+			if (ids.length === 0) {
+				$('.exportCheckbox').each(function () {
+					ids.push($(this).val());
+				});
+			}
+
+			return ids;
+		}
+		
+		function testAnswer(regex, result) {
+			if (!regex) {
+				return true;
+			}
+			return regex.test(result);
+		}
+
+		function downloadCsv(el, isConfirm, singleRow = null) {
+			if (isConfirm && !confirm('{{ 'mango-sylius.ui.shippingExport.confirmSendQuestion'|trans }}')) {
+				return false;
+			}
+
+			var ids = singleRow !== null ? [singleRow] : getCheckedCheckboxesIds();
+			var urlParams = '';
+
+			for (var i = 0; i < ids.length; i++) {
+				if (i > 0) {
+					urlParams += '&';
+				}
+				urlParams += 'ids[]=' + ids[i];
+			}
+
+			{% for question in exporter.questionsArray %}
+				var resultOk = false;
+				do {
+					var result = prompt('{{ question.label }}', '{{ question.defaultValue is not empty ? question.defaultValue : '' }}');
+					if (typeof result === "undefined" || result === null) {
+						return;
+					} else if (testAnswer({% if question.regex is not null %}{{ question.regex }}{% else %}''{% endif %}, result)) {
+						if (urlParams.length > 0) {
+							urlParams += '&'
+						}
+						urlParams += "questions[{{ question.code }}]=" + result;
+						resultOk = true;
+					}
+				} while (resultOk === false);
+			{% endfor %}
+
+			urlParams = urlParams.length > 0 ? '?' + urlParams : '';
+			window.open($(el).data('url') + urlParams, '_blank');
+			if (isConfirm) {
+				window.location.href = $(el).data('change-state-url') + urlParams;
+			}
+		}
+	</script>
+{% endblock %}

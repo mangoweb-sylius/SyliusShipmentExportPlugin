@@ -1,0 +1,17 @@
+mango-sylius:
+    ui:
+        shippingExport:
+            shipmentExport: Shipment export
+            exportShipping: Export Shipping
+            exportAndShipSuccess: '{{ count }} shipment have been signed as Shipped!'
+            confirmSendQuestion: Are you sure?
+            downloadCsvButton: Download CSV
+            onlyDownloadCSV: Only download CSV
+            downloadCSVAndSend: Download CSV and send
+            allShipment: All
+            orderNumber: Order number
+            shippingAddress: Shipping address
+            email: Email
+            phoneNumber: Phone number
+            orderDate: Order date
+            actions: Actions

@@ -1,0 +1,14 @@
+mango_sylius_admin_Shipment_export:
+    path: /shipment-exports/{exporterName}
+    defaults:
+        _controller: MangoSylius\ShipmentExportPlugin\Controller\ShipmentExportController:showAllUnshipShipments
+
+mango_sylius_admin_export_shipments:
+    path: /shipment-exports/export/{exporterName}
+    defaults:
+        _controller: MangoSylius\ShipmentExportPlugin\Controller\ShipmentExportController:exportShipmentsAction
+
+mango_sylius_admin_change_state_shipments:
+    path: /shipment-exports/mark/{exporterName}
+    defaults:
+        _controller: MangoSylius\ShipmentExportPlugin\Controller\ShipmentExportController:markAsSend

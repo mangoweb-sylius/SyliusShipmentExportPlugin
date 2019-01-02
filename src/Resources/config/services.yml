@@ -1,0 +1,42 @@
+services:
+    _defaults:
+        autowire: false
+        autoconfigure: false
+        public: false
+
+    MangoSylius\ShipmentExportPlugin\Menu\ShipmentExportMenuBuilder:
+        tags:
+            - name: kernel.event_listener
+              event: sylius.menu.admin.main
+              method: buildMenu
+        arguments:
+            $parameterBag: '@parameter_bag'
+
+    MangoSylius\ShipmentExportPlugin\Controller\ShipmentExportController:
+        public: true
+        arguments:
+            $parameterBag: '@parameter_bag'
+            $templatingEngine: '@templating'
+            $entityManager: '@doctrine.orm.default_entity_manager'
+            $flashBag: '@session.flash_bag'
+            $stateMachineFatory: '@sm.factory'
+            $eventDispatcher: '@event_dispatcher'
+            $router: '@router'
+            $shipmentExporter: '@MangoSylius\ShipmentExportPlugin\Model\ShipmentExporterInterface'
+            $shipmentRepository: '@sylius.repository.shipment'
+            $translator: '@translator'
+
+    MangoSylius\ShipmentExportPlugin\Factory\ShipmentExportFactory:
+        arguments:
+            - "@request_stack"
+            - "@mango_sylius.shipment_exporter"
+
+    MangoSylius\ShipmentExportPlugin\Model\ShipmentExporterInterface:
+        factory: 'MangoSylius\ShipmentExportPlugin\Factory\ShipmentExportFactory:getExporter'
+
+    mango_sylius.shipment_exporter:
+        class: Sylius\Component\Registry\ServiceRegistry
+        arguments:
+            $className: MangoSylius\ShipmentExportPlugin\Model\ShipmentExporterInterface
+
+

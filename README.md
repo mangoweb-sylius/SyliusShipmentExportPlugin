@@ -3,13 +3,25 @@
         <img src="https://avatars0.githubusercontent.com/u/38423357?s=200&v=4"/>
     </a>
 </p>
-<h1 align="center">Sylius shipment export plugin</h1>
+<h1 align="center">Sylius Shipment Export Plugin</h1>
 
 ## Features
 
-xxx
+* See list of all unshipped orders
+* Mark more orders at once as shipped
+* Download CSV for submitting batch shipments with Geis
+* Download CSV for submitting batch shipments with Czech Post
+* You can easily extend the module to support custom CSV format for other shipping providers
 
-* xxx
+
+<p align="center">
+	<img src="https://raw.githubusercontent.com/mangoweb-sylius/SyliusShipmentExportPlugin/master/doc/menu.png"/>
+</p>
+
+
+<p align="center">
+	<img src="https://raw.githubusercontent.com/mangoweb-sylius/SyliusShipmentExportPlugin/master/doc/list.png"/>
+</p>
 
 ## Installation
 
@@ -25,15 +37,15 @@ mango_sylius_shipment_export_plugin:
 
 ### Usage
 
-You can you our use predefined shipment exporter type (Česká pošta, Geis) or write your own exporter.
+You can use predefined CSV type for shipment providers Geis and Czech Post) or write your own exporter.
 
 Your custom exporter has to implement `MangoSylius\ShipmentExportPlugin\Model\ShipmentExporterInterface`
 and must be defined as service. Check out our sample implementations.
 
 
-Predefined exporters:
+Predefined shipping providers:
 
-* Česká pošta
+* Czech post
 ```
 MangoSylius\ShipmentExportPlugin\Model\CeskaPostaShipmentExporter:
     public: true

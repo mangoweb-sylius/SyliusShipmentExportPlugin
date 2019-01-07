@@ -61,7 +61,16 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 			$totalAmount = 'unsuported';
 		}
 
-		return [
+		$weight = 0;
+		foreach ($order->getItems() as $item) {
+			/** @var OrderItemInterface $item */
+			$variant = $item->getVariant();
+			if ($variant !== null) {
+				$weight += $variant->getWeight();
+			}
+		}
+
+		$array = [
 			/* 1    Číslo dokladu */
 			$order->getNumber(),
 
@@ -108,7 +117,7 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 			$order->getNumber(),
 
 			/* 16    Hmotnost */
-			'',
+			$weight,
 
 			/* 17    Objem */
 			'',
@@ -252,6 +261,14 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 			 */
 			1,
 		];
+
+		for ($i = 0; $i < count($array); ++$i) {
+			if ($array[$i] !== null) {
+				$array[$i] = iconv('UTF-8', 'WINDOWS-1250', (string) $array[$i]);
+			}
+		}
+
+		return $array;
 	}
 
 	public function getDelimiter(): string

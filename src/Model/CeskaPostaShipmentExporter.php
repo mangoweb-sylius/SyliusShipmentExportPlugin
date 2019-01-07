@@ -74,13 +74,29 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 			''
 		);
 
+		$zip = (string) preg_replace('/\s/', '', $address->getPostcode());
+		$zipFormated = substr($zip, 0, 3) . ' ' . substr($zip, 3, 2);
+
+		$method = $shippingMethodCode === 'ceska-posta-do-ruky'
+			? 'DR'
+			: 'NP';
+
+		$weight = 0;
+		foreach ($order->getItems() as $item) {
+			/** @var OrderItemInterface $item */
+			$variant = $item->getVariant();
+			if ($variant !== null) {
+				$weight += $variant->getWeight();
+			}
+		}
+
 		return [
 			/** 1  - Příjmení/Název */
-			$address->getCompany() ?? $address->getFirstName() . ' ' . $address->getLastName(),
+			$address->getCompany() ?? $address->getLastName(),
 
 			/** 2  - Jméno, může být součástí název */
-			$address->getCompany()
-				? $address->getFirstName() . ' ' . $address->getLastName()
+			$address->getCompany() === null
+				? $address->getFirstName()
 				: '',
 
 			/** 3  - Ulice */
@@ -100,7 +116,7 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 				: $address->getCity(),
 
 			/** 7  - PSČ */
-			$address->getPostcode(),
+			$zipFormated,
 
 			/** 8  - Stát */
 			$address->getCountryCode(),
@@ -126,7 +142,7 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 			$address->getPhoneNumber(),
 
 			/** 14 - Hmotnost */
-			'',
+			$weight,
 
 			/**
 			 * 15 - Udaná cena
@@ -142,7 +158,7 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 			$order->getNumber(),
 
 			/** 18 - Typ Zásilky - např.: DR (Do ruky), NP (Na poštu) */
-			$method['ceskapostaType'] ?? '',
+			$method ?? '',
 
 			/** 19 - Měna (ISO) */
 			'CZK',

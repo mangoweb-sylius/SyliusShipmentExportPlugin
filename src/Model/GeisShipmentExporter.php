@@ -55,12 +55,19 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 		assert($currencyCode !== null);
 		if ($address->getCountryCode() === 'CZ' || !$isCashOnDelivery) {
 			$totalAmount = $this->convert($order->getTotal(), $currencyCode, 'CZK');
-			$totalAmount = $totalAmount / 100;
 		} elseif ($address->getCountryCode() === 'SK') {
 			$totalAmount = $this->convert($order->getTotal(), $currencyCode, 'EUR');
-			$totalAmount = $totalAmount / 100;
 		} else {
-			$totalAmount = 'unsuported';
+			$totalAmount = null;
+		}
+
+		if ($totalAmount !== null) {
+			$totalAmount = number_format(
+				$totalAmount / 100,
+				0,
+				'.',
+				''
+			);
 		}
 
 		$weight = 0;
@@ -113,7 +120,9 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 			$isCashOnDelivery ? '1' : '0',
 
 			/* 14    Hodnota dobírky */
-			$isCashOnDelivery ? $totalAmount : '',
+			$isCashOnDelivery
+				? $totalAmount ?? 'unsuported'
+				: '',
 
 			/* 15    Variabilní symbol */
 			$order->getNumber(),

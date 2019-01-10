@@ -5,10 +5,26 @@ declare(strict_types=1);
 namespace MangoSylius\ShipmentExportPlugin\Model;
 
 use Sylius\Component\Core\Model\PaymentInterface;
+use Sylius\Component\Currency\Converter\CurrencyConverter;
 use Sylius\Component\Core\Model\ShipmentInterface;
 
 class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 {
+
+	/** @var CurrencyConverter */
+	private $currencyConverter;
+
+	public function __construct(
+		CurrencyConverter $currencyConverter
+	) {
+		$this->currencyConverter = $currencyConverter;
+	}
+
+	private function convert(int $amount, string $sourceCurrencyCode, string $targetCurrencyCode): int
+	{
+		return $this->currencyConverter->convert($amount, $sourceCurrencyCode, $targetCurrencyCode);
+	}
+
 	public function getShippingMethodsCodes(): array
 	{
 		return ['ceska-posta-do-ruky', 'ceska-posta-na-postu'];
@@ -67,9 +83,12 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 		assert($paymentMethod !== null);
 		$isCashOnDelivery = $paymentMethod->getCode() === $this->getDobirkaCode();
 
+		$currencyCode = $order->getCurrencyCode();
+		assert($currencyCode !== null);
+		$totalAmount = $this->convert($order->getTotal(), $currencyCode, 'CZK');
 		$totalAmount = number_format(
-			$order->getTotal() / 100,
-			2,
+			$totalAmount / 100,
+			0,
 			',',
 			''
 		);

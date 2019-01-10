@@ -49,6 +49,8 @@ Predefined shipping providers:
 ```
 MangoSylius\ShipmentExportPlugin\Model\CeskaPostaShipmentExporter:
     public: true
+    arguments:
+        $currencyConverter: '@sylius.currency_converter'    
     tags:
         - name: mango_sylius.shipment_exporter_type
           type: 'ceska_posta'

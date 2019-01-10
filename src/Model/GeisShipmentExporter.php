@@ -53,10 +53,16 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 
 		$currencyCode = $order->getCurrencyCode();
 		assert($currencyCode !== null);
-		if ($address->getCountryCode() === 'CZ' || !$isCashOnDelivery) {
+		if ($address->getCountryCode() === 'CZ') {
 			$totalAmount = $this->convert($order->getTotal(), $currencyCode, 'CZK');
 		} elseif ($address->getCountryCode() === 'SK') {
 			$totalAmount = $this->convert($order->getTotal(), $currencyCode, 'EUR');
+		} elseif ($address->getCountryCode() === 'PL') {
+			$totalAmount = $this->convert($order->getTotal(), $currencyCode, 'PLN');
+		} elseif ($address->getCountryCode() === 'HU') {
+			$totalAmount = $this->convert($order->getTotal(), $currencyCode, 'HUF');
+		} elseif ($address->getCountryCode() === 'RO') {
+			$totalAmount = $this->convert($order->getTotal(), $currencyCode, 'RON');
 		} else {
 			$totalAmount = null;
 		}

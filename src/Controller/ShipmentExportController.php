@@ -132,14 +132,14 @@ class ShipmentExportController
 		return new RedirectResponse($url);
 	}
 
-	private function getExporterLabel(string $exporterCode): string
+	public function getExporterLabel(string $exporterCode): string
 	{
 		$exporters = $this->parameterBag->get('mango_sylius.Shipment_exporters');
 
 		return array_key_exists($exporterCode, $exporters) ? $exporters[$exporterCode] : '';
 	}
 
-	private function getShipmentsByIds(array $ids): array
+	public function getShipmentsByIds(array $ids): array
 	{
 		/** @var EntityRepository $shipmentRepository */
 		$shipmentRepository = $this->shipmentRepository;
@@ -152,7 +152,7 @@ class ShipmentExportController
 			->getResult();
 	}
 
-	private function getReadyShipments(array $shippingMethodCodes): array
+	public function getReadyShipments(array $shippingMethodCodes): array
 	{
 		/** @var EntityRepository $shipmentRepository */
 		$shipmentRepository = $this->shipmentRepository;
@@ -169,13 +169,13 @@ class ShipmentExportController
 			->getResult();
 	}
 
-	private function dispatchEvent(string $name, ShipmentInterface $shipment): void
+	public function dispatchEvent(string $name, ShipmentInterface $shipment): void
 	{
 		$event = new GenericEvent($shipment);
 		$this->eventDispatcher->dispatch($name, $event);
 	}
 
-	private function shipShipment(ShipmentInterface $shipment): void
+	public function shipShipment(ShipmentInterface $shipment): void
 	{
 		$this->dispatchEvent('sylius.shipment.pre_ship', $shipment);
 
@@ -183,7 +183,7 @@ class ShipmentExportController
 		$stateMachine->apply(ShipmentTransitions::TRANSITION_SHIP);
 	}
 
-	private function doCsvFile(array $shipments, string $shippingMethodCode, array $questionsArray): StreamedResponse
+	public function doCsvFile(array $shipments, string $shippingMethodCode, array $questionsArray): StreamedResponse
 	{
 		$response = new StreamedResponse();
 		$response->setCallback(function () use ($shipments, $questionsArray): void {

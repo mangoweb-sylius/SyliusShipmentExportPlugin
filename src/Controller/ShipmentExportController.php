@@ -146,8 +146,10 @@ class ShipmentExportController
 
 		return $shipmentRepository->createQueryBuilder('s')
 			->select('s')
+			->join('s.order', 'o')
 			->andWhere('s.id in (:ids)')
 			->setParameter('ids', $ids)
+			->orderBy('o.number', 'ASC')
 			->getQuery()
 			->getResult();
 	}
@@ -160,11 +162,12 @@ class ShipmentExportController
 		return $shipmentRepository->createQueryBuilder('s')
 			->select('s')
 			->join('s.method', 'm')
+			->join('s.order', 'o')
 			->where('s.state = :state')
 			->andWhere('m.code in (:shippingMethodCode)')
 			->setParameter('state', ShipmentInterface::STATE_READY)
 			->setParameter('shippingMethodCode', $shippingMethodCodes)
-			->orderBy('s.updatedAt', 'ASC')
+			->orderBy('o.number', 'ASC')
 			->getQuery()
 			->getResult();
 	}

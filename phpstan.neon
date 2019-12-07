@@ -5,9 +5,11 @@ includes:
 
 parameters:
     symfony:
-        container_xml_path: tests/Application/var/cache/dev/srcApp_KernelDevDebugContainer.xml
+        container_xml_path: tests/Application/var/cache/test/testContainer.xml
 
     excludes_analyse:
+        - 'src/Controller/ShipmentExportController.php'
+
         # Too slow
         - 'src/DependencyInjection/Configuration.php'
 

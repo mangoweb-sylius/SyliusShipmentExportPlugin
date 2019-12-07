@@ -92,6 +92,7 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 			''
 		);
 
+		assert($address->getPostcode() !== null);
 		$zip = (string) preg_replace('/\s/', '', $address->getPostcode());
 		$zipFormated = substr($zip, 0, 3) . ' ' . substr($zip, 3, 2);
 

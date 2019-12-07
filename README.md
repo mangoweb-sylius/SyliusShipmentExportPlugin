@@ -73,21 +73,19 @@ MangoSylius\ShipmentExportPlugin\Model\GeisShipmentExporter:
 
 ### Usage
 
-- Create symlink from .env.dist to .env or create your own .env file
 - Develop your plugin in `/src`
 - See `bin/` for useful commands
 
 ### Testing
 
 After your changes you must ensure that the tests are still passing.
-* Easy Coding Standard
-  ```bash
-  bin/ecs.sh
-  ```
-* PHPStan
-  ```bash
-  bin/phpstan.sh
-  ```
+
+```bash
+$ composer install
+$ bin/phpstan.sh
+$ bin/ecs.sh
+```
+
 License
 -------
 This library is under the MIT license.

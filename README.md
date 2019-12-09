@@ -19,7 +19,7 @@ Shipment Export Plugin
 
 ## Features
 
-* See list of all unshipped orders
+* See list of all ready to ship orders (offline payment method or payment completed for non offline method)
 * Mark more orders at once as shipped
 * Download CSV for submitting batch shipments with Geis
 * Download CSV for submitting batch shipments with Czech Post

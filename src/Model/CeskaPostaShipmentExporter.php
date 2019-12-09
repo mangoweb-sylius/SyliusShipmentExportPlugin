@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MangoSylius\ShipmentExportPlugin\Model;
 
+use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Currency\Converter\CurrencyConverter;

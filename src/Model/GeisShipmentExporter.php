@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MangoSylius\ShipmentExportPlugin\Model;
 
+use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Currency\Converter\CurrencyConverter;
 use Sylius\Component\Payment\Model\PaymentInterface;
@@ -29,11 +30,6 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 		return ['geis-cz', 'geis-sk', 'geis-eu', 'geis-other'];
 	}
 
-	public function getDobirkaCode(): ?string
-	{
-		return 'dobirka';
-	}
-
 	public function getRow(ShipmentInterface $shipment, array $questionsArray): array
 	{
 		$order = $shipment->getOrder();
@@ -48,8 +44,9 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 		$payment = $order->getPayments()->first();
 		assert($payment instanceof PaymentInterface);
 		$paymentMethod = $payment->getMethod();
-		assert($paymentMethod !== null);
-		$isCashOnDelivery = $paymentMethod->getCode() === $this->getDobirkaCode();
+		assert($paymentMethod instanceof PaymentMethodInterface);
+		assert($paymentMethod->getGatewayConfig() !== null);
+		$isCashOnDelivery = $paymentMethod->getGatewayConfig()->getFactoryName() === 'offline';
 
 		$currencyCode = $order->getCurrencyCode();
 		assert($currencyCode !== null);

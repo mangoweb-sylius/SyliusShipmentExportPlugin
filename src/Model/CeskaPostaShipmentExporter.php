@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace MangoSylius\ShipmentExportPlugin\Model;
 
+use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
+use Sylius\Component\Core\Model\PaymentMethodInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Currency\Converter\CurrencyConverter;
 
@@ -27,11 +29,6 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 	public function getShippingMethodsCodes(): array
 	{
 		return ['ceska-posta-do-ruky', 'ceska-posta-na-postu'];
-	}
-
-	public function getDobirkaCode(): ?string
-	{
-		return 'dobirka';
 	}
 
 	public function getRow(ShipmentInterface $shipment, array $questionsArray): array
@@ -79,8 +76,9 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 		$payment = $order->getPayments()->first();
 		assert($payment instanceof PaymentInterface);
 		$paymentMethod = $payment->getMethod();
-		assert($paymentMethod !== null);
-		$isCashOnDelivery = $paymentMethod->getCode() === $this->getDobirkaCode();
+		assert($paymentMethod instanceof PaymentMethodInterface);
+		assert($paymentMethod->getGatewayConfig() !== null);
+		$isCashOnDelivery = $paymentMethod->getGatewayConfig()->getFactoryName() === 'offline';
 
 		$currencyCode = $order->getCurrencyCode();
 		assert($currencyCode !== null);

@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use MangoSylius\ShipmentExportPlugin\Model\ShipmentExporterInterface;
 use SM\Factory\FactoryInterface;
+use Sylius\Component\Core\Model\PaymentInterface;
 use Sylius\Component\Core\Model\ShipmentInterface;
 use Sylius\Component\Core\Repository\ShipmentRepositoryInterface;
 use Sylius\Component\Shipping\ShipmentTransitions;
@@ -163,9 +164,17 @@ class ShipmentExportController
 			->select('s')
 			->join('s.method', 'm')
 			->join('s.order', 'o')
-			->where('s.state = :state')
-			->andWhere('m.code in (:shippingMethodCode)')
-			->setParameter('state', ShipmentInterface::STATE_READY)
+			->join('o.payments', 'p')
+			->join('p.method', 'pm')
+			->join('pm.gatewayConfig', 'gc')
+			->where('s.state = :shipmentStateReady')
+			->andWhere('m.code IN (:shippingMethodCode)')
+			->andWhere('p.state IN (:supportedPaymentStates) ')
+			->andWhere('(gc.factoryName = :offline OR p.state = :paymentCompleteState)')
+			->setParameter('offline', 'offline')
+			->setParameter('shipmentStateReady', ShipmentInterface::STATE_READY)
+			->setParameter('paymentCompleteState', PaymentInterface::STATE_COMPLETED)
+			->setParameter('supportedPaymentStates', [PaymentInterface::STATE_COMPLETED, PaymentInterface::STATE_NEW])
 			->setParameter('shippingMethodCode', $shippingMethodCodes)
 			->orderBy('o.number', 'ASC')
 			->getQuery()

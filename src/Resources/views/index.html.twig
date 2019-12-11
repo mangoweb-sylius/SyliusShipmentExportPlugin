@@ -49,7 +49,7 @@
 
 	<div class="ui segment">
 		{% if shipments|length > 0 %}
-			{{ include('MangoSyliusShipmentExportPlugin::_table.html.twig') }}
+			{{ include('@MangoSyliusShipmentExportPlugin/_table.html.twig') }}
 		{% else %}
 			{% import '@SyliusUi/Macro/messages.html.twig' as messages %}
 			{{ messages.info('sylius.ui.no_results_to_display') }}

@@ -24,7 +24,7 @@
 	</thead>
 	<tbody>
 	{% for row in shipments %}
-		{{ include('MangoSyliusShipmentExportPlugin::_row.html.twig') }}
+		{{ include('@MangoSyliusShipmentExportPlugin/_row.html.twig') }}
 	{% endfor %}
 	</tbody>
 </table>

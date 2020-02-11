@@ -204,6 +204,16 @@ class ShipmentExportController
 				throw new \RuntimeException('Cannot open file: php://output');
 			}
 
+			if ($this->shipmentExporter->getHeaders() !== null) {
+				foreach ($this->shipmentExporter->getHeaders() as $header) {
+					fputcsv(
+						$handle,
+						$header,
+						$this->shipmentExporter->getDelimiter()
+					);
+				}
+			}
+
 			foreach ($shipments as $shipment) {
 				assert($shipment instanceof ShipmentInterface);
 				fputcsv(

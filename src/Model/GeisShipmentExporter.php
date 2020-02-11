@@ -296,4 +296,9 @@ class GeisShipmentExporter implements ShipmentExporterInterface
 
 		return $question;
 	}
+
+	public function getHeaders(): ?array
+	{
+		return null;
+	}
 }

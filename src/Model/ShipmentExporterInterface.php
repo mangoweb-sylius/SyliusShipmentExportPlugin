@@ -15,4 +15,6 @@ interface ShipmentExporterInterface
 	public function getDelimiter(): string;
 
 	public function getQuestionsArray(): ?array;
+
+	public function getHeaders(): ?array;
 }

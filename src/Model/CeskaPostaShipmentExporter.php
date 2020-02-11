@@ -202,4 +202,9 @@ class CeskaPostaShipmentExporter implements ShipmentExporterInterface
 	{
 		return null;
 	}
+
+	public function getHeaders(): ?array
+	{
+		return null;
+	}
 }
